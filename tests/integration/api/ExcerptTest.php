@@ -10,6 +10,9 @@
 namespace ErnestDefoe\Hearth\Tests\integration\api;
 
 use ErnestDefoe\Hearth\Tests\integration\HearthTestCase;
+use Flarum\Extend;
+use Flarum\Post\Post;
+use Illuminate\Database\Eloquent\Builder;
 use PHPUnit\Framework\Attributes\Test;
 
 class ExcerptTest extends HearthTestCase
@@ -32,6 +35,26 @@ class ExcerptTest extends HearthTestCase
         $this->assertArrayHasKey('Hidden opener', $excerpts);
         $this->assertNull($excerpts['Hidden opener']);
         $this->assertStringNotContainsString('secret words', json_encode($body));
+    }
+
+    /**
+     * 🚨 Another extension hides a first post through a visibility scope
+     * (a private reply, a gated post): the list must not leak its words.
+     * Core scopes endpoint eager loads by visibility; this holds it to that.
+     */
+    #[Test]
+    public function a_first_post_another_extension_hides_is_never_an_excerpt()
+    {
+        $this->extend(
+            (new Extend\ModelVisibility(Post::class))
+                ->scope(fn ($actor, Builder $query) => $query->where('posts.id', '!=', 1))
+        );
+
+        [$status, $body] = $this->get('/api/discussions', 2);
+
+        $this->assertSame(200, $status);
+        $this->assertNull($this->excerpts($body)['Cardamom buns']);
+        $this->assertStringNotContainsString('Saturday', json_encode($body));
     }
 
     #[Test]

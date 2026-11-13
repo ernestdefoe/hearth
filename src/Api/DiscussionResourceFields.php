@@ -71,11 +71,13 @@ class DiscussionResourceFields
         }
 
         /*
-         * 🚨 The eager load is not visibility-scoped, so this reads the post
-         * whatever its state. A first post that is hidden, or still waiting
-         * for flarum/approval, says nothing in the list: its text would
-         * otherwise reach readers who cannot open it. Both are columns on
-         * the loaded row, so the check costs no query.
+         * The eager load goes through core's visibility scopes (every
+         * Flarum 2 release applies each related resource's scope to an
+         * endpoint's eagerLoad()), so a first post another extension hides
+         * from this reader arrives as null: ExcerptTest proves it. A hidden
+         * or unapproved first post still says nothing even to staff who
+         * could open it: a list is not the place. Both are columns on the
+         * loaded row, so the check costs no query.
          */
         if ($post->hidden_at !== null || $post->getAttribute('is_approved') === false || $post->getAttribute('is_approved') === 0) {
             return null;
@@ -84,8 +86,9 @@ class DiscussionResourceFields
         $xml = $post->parsed_content;
 
         // Attachment markup carries filenames and sizes, which read as noise
-        // in a sentence of prose. Quotes are somebody else's words.
-        foreach (['UPL-IMAGE-PREVIEW', 'UPL-FILE', 'QUOTE', 'POSTMENTION'] as $tag) {
+        // in a sentence of prose. Quotes are somebody else's words. Spoilers
+        // and collapsed details are hidden on purpose and stay hidden here.
+        foreach (['UPL-IMAGE-PREVIEW', 'UPL-FILE', 'QUOTE', 'POSTMENTION', 'SPOILER', 'ISPOILER', 'DETAILS'] as $tag) {
             $xml = Utils::removeTag($xml, $tag);
         }
 
