@@ -57,3 +57,14 @@
 .HearthEvening {
   font-weight: 800;
 }
+
+// fof/discussion-views pins its count at a fixed spot (top 72px, right 0)
+// that assumes core's row height; on a card it lands on the reply count.
+// In Hearth it is part of the info line.
+html:not(#x-hi) .DiscussionListItem-info > .item-discussion-views {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-inline-start: 8px;
+}
