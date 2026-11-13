@@ -6,7 +6,7 @@ ernestdefoe-hearth:
       own_right_label: Put each member's own posts on the right
       own_right_help: Like a chat. Turn it off to keep every post on the left.
       shelf_label: Show tags as a shelf of jars
-      shelf_help: The Tags page shows each tag as a jar in its colour, on wooden shelves. Off, it shows the usual tag tiles.
+      shelf_help: The Tags page shows each tag as a jar in its color, on wooden shelves. Off, it shows the usual tag tiles.
       seasons_label: Seasonal touches
       seasons_help: A small sprig on the welcome card that changes with the season. They switch off by themselves while Festoon is enabled.
       seasons_north: Northern hemisphere
