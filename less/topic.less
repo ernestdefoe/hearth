@@ -5,39 +5,57 @@
 
 // --- The header card --------------------------------------------------------
 
-.DiscussionHero {
-  // flarum/tags sets --hero-bg to the first tag's colour; Hearth tints with it
+// 🚨 html:not(#x-hi) (1,x,1): other extensions restyle coloured heroes at
+// (0,3,1) (a dark gradient on dev), which would leave Hearth's dark title on
+// a dark card. The hero is the theme's to draw.
+html:not(#x-hi) .Hero.DiscussionHero,
+html:not(#x-hi) .Hero.TagHero {
+  // flarum/tags sets --hero-bg to the tag's colour; Hearth tints with it
   // instead of filling with it, so the title is always dark-on-light (or
   // light-on-dark in Evening) whatever the tag colour.
   --hearth-hero: var(--hero-bg, var(--hearth-warm));
   background: var(--hearth-warm);
   background: color-mix(in srgb, var(--hearth-hero) 16%, var(--hearth-card));
+  background-image: none;
   color: var(--hearth-text);
   margin: 4px auto 0;
   // Lined up with the page, not running edge to edge on a wide screen.
   max-width: ~'min(calc(100% - 30px), 1250px)';
+  border: 0;
   border-radius: 28px;
   padding: 30px 0;
   text-align: start;
   overflow: hidden;
 
-  // The `--colored` modifier makes core paint the whole hero the tag colour
-  // with contrast text: Hearth's tint replaces it.
-  &.DiscussionHero--colored {
-    background: color-mix(in srgb, var(--hearth-hero) 16%, var(--hearth-card));
-    color: var(--hearth-text);
-  }
-
-  .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
+  &::before,
+  &::after {
+    content: none;
   }
 }
-[data-theme^='dark'] .DiscussionHero,
-[data-theme^='dark'] .DiscussionHero.DiscussionHero--colored {
+html[data-theme^='dark']:not(#x-hi) .Hero.DiscussionHero,
+html[data-theme^='dark']:not(#x-hi) .Hero.TagHero {
   background: color-mix(in srgb, var(--hearth-hero) 14%, var(--hearth-card));
+}
+html:not(#x-hi) .Hero.TagHero {
+  --hearth-hero: var(--hero-bg, var(--hearth-warm));
+  // Core's narrow tag-hero container reads best centred.
+  text-align: center;
+
+  .Hero-title,
+  .Hero-subtitle,
+  .Hero-subtitle a {
+    color: var(--hearth-text);
+  }
+  .Hero-subtitle {
+    color: var(--hearth-soft);
+  }
+}
+
+.DiscussionHero .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
 }
 
 .DiscussionHero-items {
@@ -52,7 +70,7 @@
   }
 }
 
-html:not(#x-hi) .DiscussionHero {
+html:not(#x-hi) .Hero.DiscussionHero {
   .DiscussionHero-title {
     display: block;
     font-family: var(--hearth-serif);
@@ -61,10 +79,13 @@ html:not(#x-hi) .DiscussionHero {
     color: var(--hearth-text);
     overflow-wrap: anywhere;
   }
-  .TagLabel {
+  .TagLabel,
+  .TagsLabel .TagLabel.colored {
     // Core sets the hero chip's radius with !important from this variable.
     --border-radius: 999px;
+    --tag-color: var(--hearth-text);
     border-radius: 999px;
+    border: 0;
     padding: 5px 12px;
     font-weight: 800;
     font-size: 13px;
