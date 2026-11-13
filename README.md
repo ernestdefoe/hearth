@@ -31,6 +31,7 @@ Hearth keeps Flarum's own page structure. It changes how the forum looks, not wh
 
 | Setting | What it does |
 |---|---|
+| Colors | Four colors, each with named presets, a color picker and a hex field: **Accent** (Sage, Clay, Lake, Plum), **Paper** (Oat, Linen, Fern, Rose), **Evening accent** and **Evening ground**. Every tint, line, hover and button is worked out from these four, so one pick recolors the whole theme. Paper is kept light and the Evening ground dark so text stays readable; a color on the wrong side falls back to the default. |
 | Show the welcome card | The greeting above the discussion list. |
 | Put each member's own posts on the right | Off keeps every post on the left. |
 | Show tags as a shelf of jars | Off shows flarum/tags' usual tiles. |

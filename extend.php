@@ -11,6 +11,7 @@ use ErnestDefoe\Hearth\ActiveTheme;
 use ErnestDefoe\Hearth\Api;
 use ErnestDefoe\Hearth\HearthServiceProvider;
 use ErnestDefoe\Hearth\Http\DecideTheme;
+use ErnestDefoe\Hearth\Palette;
 use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource;
@@ -41,10 +42,17 @@ return [
                 $url = $disk->url("extensions/ernestdefoe-hearth/fonts/$face.woff2");
                 $document->head[] = '<link rel="preload" href="'.e($url).'" as="font" type="font/woff2" crossorigin>';
             }
+
+            // The owner's four colours, when they differ from Hearth's own.
+            // Validated to #rrggbb in Palette; nothing else reaches the tag.
+            if ($palette = resolve(Palette::class)->style()) {
+                $document->head[] = $palette;
+            }
         }),
 
     (new Extend\Frontend('admin'))
-        ->js(__DIR__.'/js/dist/admin.js'),
+        ->js(__DIR__.'/js/dist/admin.js')
+        ->css(__DIR__.'/less/admin.less'),
 
     new Extend\Locales(__DIR__.'/locale'),
 
@@ -60,6 +68,11 @@ return [
      * extend.php must not autoload our own classes while composer updates.
      */
     (new Extend\Settings())
+        // read by Palette (the colours) via the document head above
+        ->default('ernestdefoe-hearth.accent', '#4F6F4B')
+        ->default('ernestdefoe-hearth.paper', '#F5EEE2')
+        ->default('ernestdefoe-hearth.evening_accent', '#A9C4A0')
+        ->default('ernestdefoe-hearth.evening_ground', '#1F1814')
         // read by welcome.tsx: the welcome card above the discussion list
         ->default('ernestdefoe-hearth.welcome', true)
         ->serializeToForum('hearthWelcome', 'ernestdefoe-hearth.welcome', 'boolval')

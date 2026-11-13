@@ -1,0 +1,80 @@
+// The colour rows on Hearth's settings page. Admin colours come from core's
+// own properties, so the admin's light/dark modes carry through.
+
+.HearthColors {
+  margin-bottom: 24px;
+}
+.HearthColors-title {
+  margin: 0 0 4px;
+}
+
+.HearthColors .HearthColorRow {
+  margin: 14px 0 22px;
+}
+
+.HearthColorRow-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.HearthColorRow-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+}
+
+.HearthColorRow-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 5px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--control-bg);
+  background: var(--body-bg);
+  color: var(--text-color);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--muted-color);
+  }
+  &.is-on {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+  }
+}
+
+.HearthColorRow-chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+.HearthColorRow-picker {
+  width: 40px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--control-bg);
+  border-radius: 8px;
+  background: var(--body-bg);
+  cursor: pointer;
+}
+
+.HearthColorRow-hex.FormControl {
+  width: 110px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-transform: uppercase;
+}
+
+.HearthColorRow-error {
+  margin-top: 6px;
+  color: var(--error-color, #d83e3e);
+  font-size: 13px;
+}

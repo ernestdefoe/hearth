@@ -1,5 +1,33 @@
 ernestdefoe-hearth:
   admin:
+    colors:
+      title: Colors
+      intro: Pick a preset or any color. Every tint, line, hover and button in Hearth is worked out from these four, so one pick recolors the whole theme.
+      accent_label: Accent
+      accent_help: Buttons, links, the kettle and your own posts in Daytime.
+      paper_label: Paper
+      paper_help: The page in Daytime. Cards and lines are shaded from it. Keep it light; a dark color falls back to Oat so text stays readable.
+      evening_accent_label: Evening accent
+      evening_accent_help: Buttons, the kettle and your own posts in Evening (dark mode).
+      evening_ground_label: Evening ground
+      evening_ground_help: The page in Evening. Keep it dark; a light color falls back to Ember so text stays readable.
+      presets_label: "{label} presets"
+      custom_label: "Pick any {label} color"
+      hex_label: "{label} as a hex code"
+      invalid: "That isn't a #RRGGBB color, so {fallback} is used."
+      presets:
+        sage: Sage
+        clay: Clay
+        lake: Lake
+        plum: Plum
+        oat: Oat
+        linen: Linen
+        fern: Fern
+        rose: Rose
+        ember: Ember
+        moss: Moss
+        ink: Ink
+        damson: Damson
     settings:
       welcome_label: Show the welcome card
       welcome_help: '"Good afternoon, Mira" above the discussion list, with how many conversations have something new. Guests see your welcome title and message there instead of the banner. With Homecoming enabled, its welcome strip is used instead.'
