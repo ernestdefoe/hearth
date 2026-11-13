@@ -68,6 +68,7 @@ ernestdefoe-hearth:
     shelf:
       label: Tags
       count: "{count, plural, one {# discussion} other {{formatted} discussions}}"
+    pantry: The pantry
     pills:
       label: Tags
       all: All

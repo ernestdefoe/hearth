@@ -143,6 +143,12 @@ h3,
   border-radius: 14px;
 }
 
+// "The pantry" heading is for the desktop sidebar only: on phones the nav is
+// a dropdown menu and on tablets one row of links, where a heading is noise.
+html:not(#x-hi) .item-hearthPantry {
+  display: none;
+}
+
 // ---------------------------------------------------------------------------
 // The sidebar: core's index nav, drawn as pills.
 // ---------------------------------------------------------------------------
@@ -187,7 +193,21 @@ h3,
     font-weight: 800;
   }
 
-  // "Tags" heading between the links and the pantry.
+  // "The pantry": a quiet serif heading over the tags.
+  html:not(#x-hi) .sideNav .item-hearthPantry {
+    display: block;
+    padding: 0 14px 6px;
+  }
+  // Outranks the pill rule for the nav's links and spans.
+  html:not(#x-hi) .sideNav .Dropdown-menu > li > .HearthPantry {
+    display: block;
+    padding: 0;
+    font-family: var(--hearth-serif);
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--hearth-text);
+  }
+
   .sideNav .Dropdown-separator {
     background: transparent;
     margin: 10px 0;

@@ -9,6 +9,7 @@ import installShelf from './shelf';
 import installEvening from './evening';
 import installHouseRules from './houseRules';
 import installPantryPills from './pantryPills';
+import installPantryHeading from './pantryHeading';
 import { enabled } from './util';
 
 export { default as WelcomeCard } from './welcome';
@@ -52,6 +53,7 @@ app.initializers.add(
     installEvening();
     installHouseRules();
     installPantryPills();
+    installPantryHeading();
   },
   -100
 );
