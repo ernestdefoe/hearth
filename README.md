@@ -4,6 +4,16 @@ A warm, cozy theme for small hobby communities on **Flarum 2**: bakers, knitters
 
 Hearth keeps Flarum's own page structure. It changes how the forum looks, not where things are, so extensions keep working.
 
+![Hearth: the discussion list](screenshots/01-index-light.png)
+
+| Evening | A discussion |
+|---|---|
+| ![Evening](screenshots/02-index-evening.png) | ![A discussion](screenshots/03-discussion-light.png) |
+
+| The tag shelf | Phone | Phone, Evening |
+|---|---|---|
+| ![The tag shelf](screenshots/05-shelf-light.png) | ![Phone](screenshots/06-phone-light.png) | ![Phone, Evening](screenshots/07-phone-evening.png) |
+
 ## What it does
 
 - **A welcome card** above the discussion list: "Good afternoon, Mira." with how many conversations have something new since your last visit, and a **Catch up** button to the first of them. Guests see your welcome title and message there, with **Join in** and **Log in**. It can be hidden until the next day. With [Homecoming](https://github.com/ernestdefoe/homecoming) enabled, Hearth uses Homecoming's welcome strip instead and styles it to match.
