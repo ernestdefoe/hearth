@@ -386,8 +386,18 @@ html:not(#x-hi) .DiscussionListItem-info .item-excerpt {
   --size: 48px;
 }
 
+// Core's stats column is 40px wide, made for one icon and a number. Hearth's
+// "N new" pill and "N replies" plus other extensions' items (votes, views)
+// need their own room, stacked and right-aligned, never overlapping.
 .DiscussionListItem-stats {
   align-self: flex-start;
+  width: auto;
+  min-width: 0;
+  align-items: flex-end;
+  gap: 6px;
+  text-align: end;
+  font-size: 13px;
+  color: var(--hearth-muted);
 }
 
 .HearthCounts {
