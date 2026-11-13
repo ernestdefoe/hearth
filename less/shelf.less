@@ -1,0 +1,177 @@
+// ---------------------------------------------------------------------------
+// The Tags page as a pantry shelf: jars in rows, each row on a wooden plank.
+// ---------------------------------------------------------------------------
+
+.HearthShelf {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(~'min(190px, 100%)', 1fr));
+  column-gap: 0;
+  row-gap: 28px;
+}
+
+.HearthShelf-item {
+  position: relative;
+  min-width: 0;
+  padding: 0 12px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  // The plank: every item draws its own stretch, and with no column gap the
+  // stretches meet into one shelf across the row.
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 12px;
+    background: linear-gradient(#C9945F, #A8743F);
+    box-shadow: 0 6px 10px -6px rgba(90, 60, 30, 0.5);
+  }
+}
+[data-theme^='dark'] .HearthShelf-item::after {
+  background: linear-gradient(#6B4A2C, #4E3520);
+}
+// The ends of each row get rounded ends (the first and last in a row are not
+// known to CSS, so every plank stretch rounds a little and they still meet).
+.HearthShelf-item:first-child::after {
+  border-radius: 6px 0 0 6px;
+}
+.HearthShelf-item:last-child::after {
+  border-radius: 0 6px 6px 0;
+}
+
+html:not(#x-hi) .HearthShelf-jar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--hearth-text);
+  text-decoration: none;
+  border-radius: 18px;
+  padding: 6px;
+
+  &:hover .HearthShelf-art,
+  &:focus-visible .HearthShelf-art {
+    transform: translateY(-4px) rotate(-2deg);
+  }
+}
+
+.HearthShelf-art {
+  position: relative;
+  width: 96px;
+  height: 112px;
+  transition: transform 0.2s ease;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .HearthShelf-art {
+    transition: none;
+  }
+}
+
+// The tag's icon sits on the jar's paper label.
+.HearthShelf-icon {
+  position: absolute;
+  left: 50%;
+  top: 40px;
+  transform: translateX(-50%);
+  font-size: 15px;
+  color: var(--hearth-ink);
+}
+
+.HearthShelf-name {
+  font-family: var(--hearth-serif);
+  font-size: 18px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.HearthShelf-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hearth-muted);
+}
+
+.HearthShelf-description {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--hearth-soft);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.HearthShelf-children {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+html:not(#x-hi) .HearthShelf-child {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--hearth-card);
+  box-shadow: inset 0 0 0 1px var(--hearth-line);
+  color: var(--hearth-soft);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--hearth-text);
+  }
+}
+
+html:not(#x-hi) .HearthShelf-last {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hearth-muted);
+  max-width: 100%;
+  text-decoration: none;
+}
+.HearthShelf-lastTitle {
+  display: block;
+  font-weight: 800;
+  color: var(--hearth-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// The cloud of tags without a position stays flarum/tags', in pills.
+.TagsPage .TagCloud .TagLabel {
+  border-radius: 999px;
+  padding: 4px 11px;
+  font-weight: 800;
+}
+
+@media @phone {
+  .HearthShelf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .HearthShelf-art {
+    width: 80px;
+    height: 94px;
+  }
+  .HearthShelf-icon {
+    top: 33px;
+  }
+}

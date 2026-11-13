@@ -1,0 +1,253 @@
+// ---------------------------------------------------------------------------
+// The shell: page, header, the sidebar's pill navigation, buttons.
+// Flarum's own page structure throughout; only its look changes.
+// ---------------------------------------------------------------------------
+
+// 🚨 Core's page template carries an inline `[data-theme^="dark"] body`
+// background so the page never flashes while CSS loads, and it outranks a
+// plain `body` rule. `html[data-theme] body` outranks it in light and dark.
+body,
+html[data-theme] body {
+  font-family: var(--hearth-sans);
+  background: var(--hearth-bg);
+  color: var(--hearth-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+// The lamp in Evening: a soft warm pool at the top of the page, under
+// everything (it is the page's own background, not a layer above it).
+html[data-theme^='dark'] body {
+  background: radial-gradient(1100px 520px at 30% -120px, var(--hearth-glow), transparent 70%) no-repeat, var(--hearth-bg);
+}
+
+h1,
+h2,
+h3,
+.Hero-title,
+.DiscussionListItem-title,
+.Modal-title,
+.UserCard-identity .username {
+  font-family: var(--hearth-serif);
+  font-weight: 400;
+}
+
+// ---------------------------------------------------------------------------
+// Header
+// ---------------------------------------------------------------------------
+
+.App-header {
+  background: var(--hearth-bg);
+  box-shadow: none;
+}
+
+.App-header .Header-title {
+  font-family: var(--hearth-serif);
+  font-weight: 400;
+  font-size: 22px;
+
+  a {
+    color: var(--header-color);
+  }
+}
+
+// Search: a soft paper pill.
+.App-header .Search-input {
+  border-radius: 999px;
+  background: var(--hearth-card);
+  box-shadow: inset 0 0 0 1px var(--hearth-line);
+  color: var(--hearth-muted);
+  font-weight: 600;
+}
+
+// The round header buttons (notifications, flags, session).
+.Header-controls > li > .Button--flat,
+.Header-controls .Dropdown > .Button {
+  border-radius: 999px;
+}
+
+@media @tablet-up {
+  .App-header .Header-controls > li > .Dropdown > .Dropdown-toggle.Button--icon,
+  .App-header .Header-controls > li > .Button--icon {
+    background: var(--hearth-card);
+    box-shadow: inset 0 0 0 1px var(--hearth-line);
+    color: var(--hearth-text);
+  }
+}
+
+// In a coloured header (Appearance → coloured header) the bar is the owner's
+// colour and core picks readable control colours for it; Hearth's paper
+// buttons step aside there.
+[data-colored-header='true'] {
+  .App-header {
+    background: var(--header-bg);
+  }
+  .App-header .Search-input,
+  .App-header .Header-controls > li > .Dropdown > .Dropdown-toggle.Button--icon,
+  .App-header .Header-controls > li > .Button--icon {
+    background: var(--header-control-bg);
+    box-shadow: none;
+    color: var(--header-control-color);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Buttons: pills
+// ---------------------------------------------------------------------------
+
+.Button {
+  border-radius: 999px;
+  font-weight: 700;
+}
+.Button--primary {
+  font-weight: 800;
+}
+.ButtonGroup > .Button:first-child:not(:last-child) {
+  border-radius: 999px 0 0 999px;
+}
+.ButtonGroup > .Button:last-child:not(:first-child) {
+  border-radius: 0 999px 999px 0;
+}
+.Button--icon.Button--flat,
+.Button--icon {
+  border-radius: 999px;
+}
+
+.Dropdown-menu {
+  border-radius: 16px;
+  padding: 6px;
+  background: var(--hearth-card);
+  box-shadow: var(--hearth-lift), 0 0 0 1px var(--hearth-line);
+
+  > li > a,
+  > li > button,
+  > li > span {
+    border-radius: 10px;
+  }
+}
+
+.Modal-content {
+  border-radius: 24px;
+  background: var(--hearth-card);
+}
+
+.FormControl {
+  border-radius: 14px;
+}
+
+// ---------------------------------------------------------------------------
+// The sidebar: core's index nav, drawn as pills.
+// ---------------------------------------------------------------------------
+
+@media @desktop-up {
+  .IndexPage-nav .App-primaryControl .Button,
+  .DiscussionPage-nav .App-primaryControl .Button {
+    padding: 13px 18px;
+    font-size: 15px;
+  }
+
+  // 🚨 html:not(#x-hi): core's expanded side nav is (0,4,2) and zeroes the
+  // left padding; a pill needs its own.
+  html:not(#x-hi) .sideNav .Dropdown-menu > li > a,
+  html:not(#x-hi) .sideNav .Dropdown-menu > li > .Button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--hearth-soft);
+
+    &:hover {
+      background: var(--hearth-card);
+      color: var(--hearth-text);
+    }
+    .Button-icon {
+      margin: 0;
+      width: 18px;
+      text-align: center;
+      color: inherit;
+    }
+  }
+  html:not(#x-hi) .sideNav .Dropdown-menu > li.active > a,
+  html:not(#x-hi) .sideNav .Dropdown-menu > li.active > a:hover,
+  html:not(#x-hi) .sideNav .Dropdown-menu > li > a.active {
+    background: var(--hearth-card);
+    color: var(--hearth-text);
+    box-shadow: 0 1px 0 var(--hearth-line);
+    font-weight: 800;
+  }
+
+  // Tags in the sidebar: a dot of the tag's colour instead of the icon, as
+  // in a pantry of labelled jars. flarum/tags puts the colour on the icon
+  // as `color`; the dot is that colour.
+  html:not(#x-hi) .sideNav .TagLinkButton {
+    .TagIcon,
+    .Button-icon.icon {
+      flex: 0 0 10px;
+      width: 10px;
+      height: 10px;
+      margin: 0 4px;
+      border-radius: 50%;
+      font-size: 0;
+      background: var(--color, var(--hearth-dash));
+
+      &::before {
+        content: none;
+      }
+    }
+    &.child {
+      padding-inline-start: 34px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+  }
+
+  // "Tags" heading between the links and the pantry.
+  .sideNav .Dropdown-separator {
+    background: transparent;
+    margin: 10px 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Cards that Hearth and widget hosts share.
+// ---------------------------------------------------------------------------
+
+.HearthCard {
+  background: var(--hearth-card);
+  border-radius: var(--hearth-radius);
+  padding: 18px 20px;
+  box-shadow: var(--hearth-shadow);
+  color: var(--hearth-text);
+  min-width: 0;
+
+  &--dashed {
+    background: transparent;
+    box-shadow: none;
+    border: 2px dashed var(--hearth-dash);
+  }
+}
+
+.HearthCard-title {
+  font-family: var(--hearth-serif);
+  font-size: 18px;
+  line-height: 1.25;
+  margin: 0 0 8px;
+  color: var(--hearth-text);
+}
+
+.HearthCard-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 600;
+  color: var(--hearth-soft);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+// The House rules card, in the sidebar below the pantry.
+.HearthHouseRules {
+  margin-top: 22px;
+}

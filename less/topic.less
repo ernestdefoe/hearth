@@ -1,0 +1,410 @@
+// ---------------------------------------------------------------------------
+// A discussion: the tinted header card with its jar, and the posts as chat
+// bubbles (yours on the right), grouped when one person speaks twice in a row.
+// ---------------------------------------------------------------------------
+
+// --- The header card --------------------------------------------------------
+
+.DiscussionHero {
+  // flarum/tags sets --hero-bg to the first tag's colour; Hearth tints with it
+  // instead of filling with it, so the title is always dark-on-light (or
+  // light-on-dark in Evening) whatever the tag colour.
+  --hearth-hero: var(--hero-bg, var(--hearth-warm));
+  background: var(--hearth-warm);
+  background: color-mix(in srgb, var(--hearth-hero) 16%, var(--hearth-card));
+  color: var(--hearth-text);
+  margin: 4px auto 0;
+  // Lined up with the page, not running edge to edge on a wide screen.
+  max-width: ~'min(calc(100% - 30px), 1250px)';
+  border-radius: 28px;
+  padding: 30px 0;
+  text-align: start;
+  overflow: hidden;
+
+  // The `--colored` modifier makes core paint the whole hero the tag colour
+  // with contrast text: Hearth's tint replaces it.
+  &.DiscussionHero--colored {
+    background: color-mix(in srgb, var(--hearth-hero) 16%, var(--hearth-card));
+    color: var(--hearth-text);
+  }
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+}
+[data-theme^='dark'] .DiscussionHero,
+[data-theme^='dark'] .DiscussionHero.DiscussionHero--colored {
+  background: color-mix(in srgb, var(--hearth-hero) 14%, var(--hearth-card));
+}
+
+.DiscussionHero-items {
+  min-width: 0;
+  flex: 1 1 auto;
+
+  & > li {
+    display: block;
+  }
+  & > li.item-tags {
+    margin-bottom: 12px;
+  }
+}
+
+html:not(#x-hi) .DiscussionHero {
+  .DiscussionHero-title {
+    display: block;
+    font-family: var(--hearth-serif);
+    font-size: 40px;
+    line-height: 1.15;
+    color: var(--hearth-text);
+    overflow-wrap: anywhere;
+  }
+  .TagLabel {
+    // Core sets the hero chip's radius with !important from this variable.
+    --border-radius: 999px;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-weight: 800;
+    font-size: 13px;
+    background: var(--hearth-card);
+    color: var(--hearth-text);
+  }
+  .TagLabel.colored .TagLabel-text {
+    color: var(--hearth-text);
+  }
+}
+
+.HearthHero-byline {
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--hearth-soft);
+
+  .username {
+    color: inherit;
+  }
+}
+
+.HearthHero-art {
+  flex: 0 0 150px;
+  width: 150px;
+  margin: -10px 0;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .HearthArt--jar {
+    --hearth-jar: var(--hearth-hero);
+  }
+}
+
+// --- The side column: Reply / Follow as big pills ----------------------------
+
+.DiscussionPage-nav {
+  .App-primaryControl .Button,
+  .ButtonGroup .Button {
+    font-weight: 800;
+  }
+  .Button.Button--primary {
+    padding-block: 12px;
+  }
+}
+
+// --- Posts as bubbles -------------------------------------------------------
+
+// Core draws a hairline between posts; bubbles need air, not rules.
+.PostStream-item:has(+ .PostStream-item)::after {
+  content: none;
+}
+
+// Comment posts, whatever their group position.
+.HearthPost .CommentPost {
+  padding-block: 12px 22px;
+}
+@media @tablet-up {
+  .HearthPost .CommentPost:not(.Post--hidden) {
+    min-height: 0;
+  }
+  .HearthPost .Post-avatar {
+    --size: 52px;
+  }
+  // The avatar column is narrower than core's 64px + padding.
+  .HearthPost .Post-container {
+    grid-template-columns: 68px minmax(0, 1fr);
+  }
+}
+
+// The meta line above the bubble: name, time, edited, badges.
+.HearthPost .Post-header {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+
+  .PostUser-name,
+  .username {
+    color: var(--hearth-text);
+    font-weight: 800;
+  }
+}
+
+// The bubble itself.
+.HearthPost .Post-body {
+  background: var(--hearth-card);
+  border-radius: 6px 22px 22px 22px;
+  padding: 16px 22px;
+  box-shadow: var(--hearth-shadow);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--hearth-text);
+  overflow-wrap: anywhere;
+  min-width: 0;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+  p {
+    margin: 0 0 10px;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+  }
+}
+
+// Quotes: an inset, warmer panel with a quote mark, never a heavy left rule.
+.HearthPost .Post-body blockquote {
+  position: relative;
+  margin: 4px 0 12px;
+  padding: 12px 16px 12px 40px;
+  background: var(--hearth-quote);
+  border: 0;
+  border-radius: 14px;
+  color: var(--hearth-soft);
+  font-size: 15px;
+
+  &::before {
+    content: '\201C';
+    position: absolute;
+    top: 2px;
+    inset-inline-start: 12px;
+    font-family: var(--hearth-serif);
+    font-size: 34px;
+    line-height: 1;
+    color: var(--hearth-clay);
+  }
+  // Nested quotes step in a little, not a fresh panel each time.
+  blockquote {
+    background: transparent;
+    padding: 0 0 0 14px;
+    margin: 8px 0;
+    border-inline-start: 2px solid var(--hearth-dash);
+    border-radius: 0;
+
+    &::before {
+      content: none;
+    }
+  }
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+// Code: inline as a soft chip, blocks scroll inside the bubble (never the page).
+.HearthPost .Post-body {
+  code {
+    font-size: 0.88em;
+    background: var(--hearth-quote);
+    color: var(--hearth-text);
+    padding: 0.12em 0.4em;
+    border-radius: 6px;
+  }
+  pre {
+    max-width: 100%;
+    overflow-x: auto;
+    background: var(--code-bg);
+    color: var(--code-color);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 4px 0 12px;
+
+    code {
+      background: transparent;
+      padding: 0;
+      font-size: inherit;
+      white-space: pre;
+    }
+  }
+  table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+// Footer (likes, reactions) and actions sit below the bubble.
+.HearthPost .Post-footer {
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hearth-muted);
+}
+.HearthPost .Post-main {
+  position: relative;
+}
+// The actions (Like, Reply, ⋯) ride on the bubble's lower corner, shown on
+// hover or focus as core does, instead of holding a row of empty space under
+// every bubble. That is what lets one person's bubbles sit close together.
+.HearthPost .Post-actions {
+  position: absolute;
+  bottom: -14px;
+  inset-inline-end: 14px;
+  margin: 0;
+  z-index: 3;
+
+  > ul {
+    background: var(--hearth-card);
+    border-radius: 999px;
+    box-shadow: var(--hearth-lift), 0 0 0 1px var(--hearth-line);
+    padding: 2px 4px;
+  }
+  .Button {
+    color: var(--hearth-muted);
+    font-weight: 700;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--hearth-warm);
+      color: var(--hearth-text);
+    }
+  }
+}
+// With a footer (likes, reactions) the bar sits under it instead.
+.HearthPost .Post-main:has(.Post-footer:not(:empty)) .Post-actions {
+  bottom: -18px;
+}
+
+// --- Grouped: the same person again within ten minutes -------------------
+
+.HearthPost--cont {
+  margin-top: -16px;
+
+  .Post-header .PostUser,
+  .Post-header .Post-avatar,
+  .PostUser-badges {
+    display: none;
+  }
+  .Post-side .Post-avatar {
+    visibility: hidden;
+  }
+  // Only the time stays, quietly, so a reader can still see when it came.
+  .Post-header {
+    margin-bottom: 4px;
+    font-size: 12px;
+  }
+  .Post-body {
+    border-radius: 22px;
+  }
+}
+
+// --- Yours, on the right ----------------------------------------------------
+
+.HearthPost--mine .Post-body {
+  background: var(--hearth-mine);
+  box-shadow: 0 1px 0 var(--hearth-mine-line);
+}
+
+@media @tablet-up {
+  .HearthPost--mine {
+    .Post-container {
+      grid-template-columns: minmax(0, 1fr) 68px;
+    }
+    .Post-side {
+      order: 2;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .Post-main {
+      order: 1;
+    }
+    .PostUser-badges {
+      float: right;
+      margin-left: 0;
+      margin-right: calc(~'5px - 68px');
+    }
+    .Post-header > ul,
+    .Post-footer,
+    .Post-actions {
+      text-align: end;
+    }
+    .Post-header > ul > li {
+      margin-right: 0;
+      margin-left: 10px;
+    }
+    .Post-body {
+      border-radius: 22px 6px 22px 22px;
+    }
+    &.HearthPost--cont .Post-body {
+      border-radius: 22px;
+    }
+  }
+  // Mine sits in from the left, so a long run of your own posts reads as yours.
+  .HearthPost--mine .Post-main {
+    margin-inline-start: 10%;
+  }
+}
+
+// --- Events: one small centred line ---------------------------------------
+
+.HearthPost--event .EventPost {
+  text-align: center;
+  padding: 6px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hearth-muted);
+
+  .Post-container,
+  .EventPost-container {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    background: var(--hearth-warm);
+    border-radius: 999px;
+    padding: 6px 14px;
+  }
+  .EventPost-icon {
+    width: auto;
+    margin: 0;
+    font-size: 13px;
+  }
+}
+
+// --- The reply placeholder: "Pull up a chair…" ----------------------------
+
+.ReplyPlaceholder {
+  border: 2px dashed var(--hearth-dash);
+  border-radius: 6px 22px 22px 22px;
+  background: var(--hearth-card);
+  font-weight: 700;
+  color: var(--hearth-muted);
+
+  &:hover {
+    border-color: var(--hearth-clay);
+  }
+}
+@media @tablet-up {
+  .ReplyPlaceholder {
+    border-color: var(--hearth-dash);
+  }
+}
+
+// The scrubber's track and handle.
+.Scrubber-bar {
+  background: var(--hearth-sage);
+}

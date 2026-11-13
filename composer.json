@@ -1,0 +1,82 @@
+{
+    "name": "ernestdefoe/hearth",
+    "description": "Hearth — a warm, cozy theme for small hobby communities on Flarum 2. Paper tones, pill navigation, rounded cards, a good-afternoon welcome card, chat-bubble posts, a tag shelf of jars, drawn kettle, jar and lamp illustrations, and an amber-lit Evening mode.",
+    "type": "flarum-extension",
+    "keywords": [
+        "flarum",
+        "flarum-extension",
+        "theme",
+        "cozy",
+        "community",
+        "hearth"
+    ],
+    "homepage": "https://github.com/ernestdefoe/hearth",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ernestdefoe",
+            "email": "ernestdefoe@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "flarum/core": "^2.0"
+    },
+    "suggest": {
+        "flarum/tags": "Tags become the coloured pantry in the sidebar and the shelf of jars on the Tags page.",
+        "ernestdefoe/homecoming": "Hearth uses Homecoming's welcome strip instead of its own welcome card when it is enabled.",
+        "ernestdefoe/festoon": "Hearth's seasonal touches stand down while Festoon dresses the forum.",
+        "fof/forum-widgets-core": "Place Hearth's House rules card anywhere FoF Forum Widgets can.",
+        "ernestdefoe/wardrobe": "Run Hearth next to other themes and let members choose."
+    },
+    "autoload": {
+        "psr-4": {
+            "ErnestDefoe\\Hearth\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ErnestDefoe\\Hearth\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Hearth",
+            "category": "theme",
+            "icon": {
+                "name": "fas fa-mug-hot",
+                "backgroundColor": "#E3B04B",
+                "color": "#3A2E27"
+            }
+        }
+    },
+    "support": {
+        "issues": "https://github.com/ernestdefoe/hearth/issues",
+        "source": "https://github.com/ernestdefoe/hearth"
+    },
+    "require-dev": {
+        "ernestdefoe/wardrobe": "^1.0",
+        "flarum/phpstan": "^2.0",
+        "flarum/tags": "^2.0",
+        "flarum/testing": "^2.0"
+    },
+    "scripts": {
+        "test": [
+            "@test:integration"
+        ],
+        "test:integration": "phpunit -c tests/phpunit.integration.xml",
+        "test:setup": "@php tests/integration/setup.php",
+        "analyse:phpstan": "phpstan analyse"
+    },
+    "scripts-descriptions": {
+        "test": "Runs all tests.",
+        "test:integration": "Runs all integration tests.",
+        "test:setup": "Sets up a database for use with integration tests. Execute this only once.",
+        "analyse:phpstan": "Run static analysis"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
+}

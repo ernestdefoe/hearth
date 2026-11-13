@@ -1,0 +1,506 @@
+// ---------------------------------------------------------------------------
+// The index: welcome card, sort pills, discussion cards.
+// ---------------------------------------------------------------------------
+
+// --- The welcome card ------------------------------------------------------
+
+.HearthWelcome {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--hearth-warm);
+  border-radius: 24px;
+  padding: 24px 28px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  color: var(--hearth-text);
+}
+
+.HearthWelcome-body {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.HearthWelcome .HearthWelcome-title {
+  font-family: var(--hearth-serif);
+  font-size: 30px;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--hearth-text);
+  overflow-wrap: anywhere;
+}
+
+.HearthWelcome-text {
+  margin: 8px 0 14px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--hearth-soft);
+
+  p {
+    margin: 0 0 6px;
+  }
+  // The owner's welcome message may carry links: readable on the warm card.
+  html:not(#x-hi) & a {
+    color: var(--hearth-link);
+    font-weight: 800;
+  }
+}
+
+.HearthWelcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+// 🚨 html:not(#x-hi): themes' link rules ((0,3,1) in Bespoke light) must not
+// recolour a button that happens to be an <a>.
+html:not(#x-hi) .HearthWelcome-action,
+html:not(#x-hi) .HearthWelcome-action:hover {
+  background: var(--hearth-ink);
+  color: var(--hearth-on-ink);
+  padding: 10px 16px;
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+}
+html[data-theme^='dark']:not(#x-hi) .HearthWelcome-action,
+html[data-theme^='dark']:not(#x-hi) .HearthWelcome-action:hover {
+  background: var(--hearth-amber);
+  color: var(--hearth-on-amber);
+}
+
+html:not(#x-hi) .HearthWelcome-login {
+  color: var(--hearth-text);
+  font-weight: 800;
+}
+
+.HearthWelcome-art {
+  flex: 0 0 220px;
+  width: 220px;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.HearthWelcome-close {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  color: var(--hearth-muted);
+  opacity: 0.7;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    color: var(--hearth-text);
+  }
+}
+
+// --- The drawings ---------------------------------------------------------
+
+.HearthArt {
+  overflow: visible;
+}
+.HearthArt-shadow {
+  fill: var(--hearth-dash);
+  opacity: 0.7;
+}
+.HearthArt-loaf {
+  fill: var(--hearth-clay);
+}
+.HearthArt-score {
+  fill: none;
+  stroke: #F3D9A8;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.HearthArt-kettle {
+  fill: var(--hearth-sage);
+}
+.HearthArt-spout {
+  stroke: var(--hearth-sage);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.HearthArt-handle {
+  fill: none;
+  stroke: var(--hearth-ink);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.HearthArt-knob {
+  fill: var(--hearth-ink);
+}
+.HearthArt-steam {
+  fill: none;
+  stroke: var(--hearth-card);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+[data-theme^='dark'] .HearthArt-steam {
+  stroke: var(--hearth-text);
+  opacity: 0.7;
+}
+.HearthArt-moon {
+  fill: var(--hearth-text);
+}
+.HearthArt-moonCut {
+  fill: var(--hearth-warm);
+}
+.HearthArt-glow {
+  fill: var(--hearth-amber);
+  opacity: 0.14;
+}
+.HearthArt-shade {
+  fill: var(--hearth-amber);
+}
+.HearthArt-stand {
+  fill: var(--hearth-muted);
+}
+.HearthArt-base {
+  stroke: var(--hearth-muted);
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+// The jar: glass in the card colour, the contents in the tag's colour.
+.HearthArt--jar,
+.HearthArt--shelfJar {
+  --hearth-jar: var(--hearth-clay);
+}
+.HearthArt-glass {
+  fill: var(--hearth-card);
+  stroke: var(--hearth-line);
+  stroke-width: 2;
+}
+.HearthArt-lid {
+  fill: var(--hearth-jar);
+}
+.HearthArt-fill {
+  fill: var(--hearth-jar);
+  opacity: 0.45;
+}
+.HearthArt-fleck {
+  fill: var(--hearth-jar);
+  opacity: 0.6;
+}
+.HearthArt-label {
+  fill: var(--hearth-card);
+  stroke: var(--hearth-line);
+  stroke-width: 1.5;
+}
+.HearthArt-eye {
+  fill: var(--hearth-ink);
+}
+.HearthArt-smile {
+  fill: none;
+  stroke: var(--hearth-ink);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+// Seasonal sprigs: small, and never the loudest thing on the card.
+.HearthSprig {
+  opacity: 0.85;
+
+  &--winter path {
+    fill: none;
+    stroke: #8FB0C9;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  &--spring circle {
+    fill: #E7A9B4;
+  }
+  &--spring .HearthSprig-heart {
+    fill: var(--hearth-amber);
+  }
+  &--summer circle {
+    fill: var(--hearth-amber);
+  }
+  &--summer path {
+    stroke: var(--hearth-amber);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  &--autumn path {
+    fill: #C8693B;
+  }
+  &--autumn .HearthSprig-vein {
+    fill: none;
+    stroke: #F3D9A8;
+    stroke-width: 1.5;
+  }
+}
+
+// --- Toolbar: sort and actions as pills ----------------------------------
+
+.IndexPage-toolbar {
+  align-items: center;
+  margin-bottom: 12px;
+
+  .Button {
+    background: transparent;
+    color: var(--hearth-muted);
+    font-weight: 700;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--hearth-card);
+      color: var(--hearth-text);
+    }
+  }
+  .Dropdown.open > .Button,
+  .Dropdown-toggle[aria-expanded='true'] {
+    background: var(--hearth-ink);
+    color: var(--hearth-on-ink);
+  }
+}
+
+// --- Discussion cards -------------------------------------------------------
+
+.DiscussionList-discussions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  > li {
+    min-width: 0;
+  }
+}
+
+.DiscussionListItem {
+  // Core pulls rows 15px past the column on both sides for its hover tint;
+  // a card sits square in the column, lined up with the welcome card.
+  margin: 0;
+  padding: 0;
+  background: var(--hearth-card);
+  border-radius: var(--hearth-radius);
+  box-shadow: var(--hearth-shadow);
+  transition: box-shadow 0.2s, transform 0.2s;
+
+  &:hover {
+    box-shadow: var(--hearth-lift);
+  }
+
+  // Core's row hover tint fights the card's own surface.
+  &:hover .DiscussionListItem-content,
+  .DiscussionListItem-content {
+    background: transparent;
+  }
+}
+.DiscussionListItem--sticky {
+  background: var(--hearth-card-alt);
+}
+
+// The Slidable underlay (phones) must match the card's rounded corners.
+.DiscussionListItem.Slidable {
+  overflow: hidden;
+}
+
+.DiscussionListItem-content {
+  padding: 18px 20px;
+  border-radius: var(--hearth-radius);
+}
+
+.DiscussionListItem-main {
+  min-width: 0;
+}
+
+.DiscussionListItem-title {
+  font-size: 20px;
+  line-height: 1.25;
+  color: var(--hearth-text);
+  overflow-wrap: anywhere;
+}
+// Read discussions step back a little, as in core, but stay legible.
+.DiscussionListItem-content.read .DiscussionListItem-title {
+  color: var(--hearth-soft);
+}
+
+// Tags sit at the start of the info line, not floated to the corner, so a
+// long name or several tags never clip.
+html:not(#x-hi) .DiscussionListItem-info > .item-tags {
+  position: static;
+  max-width: none;
+  white-space: normal;
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
+  margin-inline-end: 6px;
+}
+html:not(#x-hi) .DiscussionListItem-title {
+  margin-right: 0;
+}
+html:not(#x-hi) .DiscussionListItem-info .item-excerpt {
+  display: block;
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--hearth-soft);
+}
+
+.DiscussionListItem-info {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--hearth-muted);
+  margin-top: 4px;
+
+  .TagsLabel {
+    margin-inline-end: 4px;
+  }
+  .TagLabel {
+    border-radius: 999px;
+    font-weight: 800;
+    padding: 3px 10px;
+  }
+  // Uncoloured tags still read as a chip.
+  .TagLabel:not(.colored) {
+    background: var(--hearth-warm);
+    color: var(--hearth-soft);
+  }
+}
+
+.HearthExcerpt {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--hearth-soft);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.DiscussionListItem-author-avatar .Avatar {
+  --size: 48px;
+}
+
+.DiscussionListItem-stats {
+  align-self: flex-start;
+}
+
+.HearthCounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.HearthNew {
+  border: 0;
+  cursor: pointer;
+  background: var(--hearth-amber);
+  color: var(--hearth-on-amber);
+  font: 800 12px/1.4 var(--hearth-sans);
+  padding: 3px 9px;
+  border-radius: 999px;
+
+  &:hover,
+  &:focus-visible {
+    filter: brightness(0.95);
+  }
+}
+
+.HearthReplies {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hearth-muted);
+}
+
+// The "Load more" and empty states.
+.DiscussionList-loadMore {
+  margin-top: 18px;
+}
+.DiscussionList .Placeholder {
+  background: var(--hearth-card);
+  border-radius: var(--hearth-radius);
+  border: 2px dashed var(--hearth-dash);
+  color: var(--hearth-muted);
+}
+
+// --- The phone pantry pills ---------------------------------------------
+
+.HearthPills {
+  display: none;
+}
+
+@media @phone {
+  .HearthPills {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    margin: 0 -15px 12px;
+    padding: 2px 15px 4px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+html:not(#x-hi) .HearthPill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  background: var(--hearth-card);
+  box-shadow: inset 0 0 0 1px var(--hearth-line);
+  color: var(--hearth-soft);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  text-decoration: none;
+
+  &--on {
+    background: var(--hearth-ink);
+    color: var(--hearth-on-ink);
+    box-shadow: none;
+  }
+}
+.HearthPill-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--hearth-dot, var(--hearth-dash));
+}
+.HearthPill:first-child .HearthPill-dot {
+  display: none;
+}
+
+// --- Tag chips: pastel, like labels on jars --------------------------------
+// The tag's colour as a tint behind darker text in the same hue, instead of a
+// solid block with white text. Readable whatever colour the owner picked.
+html:not(#x-hi) .TagLabel {
+  border-radius: 999px;
+  font-weight: 800;
+  padding: 3px 10px;
+
+  &.colored,
+  &--colored {
+    background: color-mix(in srgb, var(--tag-bg) 22%, var(--hearth-card));
+    --tag-color: color-mix(in srgb, var(--tag-bg) 55%, var(--hearth-text));
+  }
+}
+html[data-theme^='dark']:not(#x-hi) .TagLabel {
+  &.colored,
+  &--colored {
+    background: color-mix(in srgb, var(--tag-bg) 26%, var(--hearth-card));
+    --tag-color: color-mix(in srgb, var(--tag-bg) 45%, var(--hearth-text));
+  }
+}

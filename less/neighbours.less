@@ -1,0 +1,57 @@
+// ---------------------------------------------------------------------------
+// Other extensions dressed to match: Homecoming's welcome strip (which Hearth
+// uses instead of its own card when it is on) and FoF Forum Widgets' cards.
+// ---------------------------------------------------------------------------
+
+.Homecoming {
+  --homecoming-card: var(--hearth-card);
+  --homecoming-soft: var(--hearth-warm);
+  --homecoming-border: transparent;
+  border-radius: var(--hearth-radius);
+  box-shadow: var(--hearth-shadow);
+  color: var(--hearth-text);
+}
+.Homecoming-strip {
+  --homecoming-card: var(--hearth-warm);
+  border-radius: 24px;
+  box-shadow: none;
+}
+.Homecoming-greeting,
+.Homecoming-heading {
+  font-family: var(--hearth-serif);
+  font-weight: 400;
+  color: var(--hearth-text);
+}
+.Homecoming-muted {
+  color: var(--hearth-muted);
+}
+
+// FoF Forum Widgets: every widget a soft card.
+.fof-widgets .Widget,
+.Widgets .Widget {
+  background: var(--hearth-card);
+  border-radius: var(--hearth-radius);
+  box-shadow: var(--hearth-shadow);
+  border: 0;
+  color: var(--hearth-text);
+}
+.fof-widgets .Widget-title,
+.Widgets .Widget-title {
+  font-family: var(--hearth-serif);
+  font-weight: 400;
+  color: var(--hearth-text);
+}
+// Hearth's own House rules card already is a card: no second frame around it.
+.Widget.HearthWidget {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+.HearthHouseRules--widget {
+  margin: 0;
+}
+
+// The header's Evening switch.
+.HearthEvening {
+  font-weight: 800;
+}
