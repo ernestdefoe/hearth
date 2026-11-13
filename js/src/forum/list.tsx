@@ -30,11 +30,19 @@ export default function installList() {
    * discussion read when tapped) and the total underneath.
    */
   extend(DiscussionListItem.prototype, 'statsItems', function (this: any, items: any) {
+    /*
+     * 🚨 Only while the count is still core's own. An extension that put its
+     * own content in that slot keeps it: Answers shows a question's answers
+     * there, and Hearth's "N replies" (which counts comments too) replaced
+     * it with a wrong number ("4 replies" on a question with one answer).
+     */
+    if (!items.has('replyCount') || items.get('replyCount')?.attrs?.className !== 'DiscussionListItem-count') return;
+
     const discussion = this.attrs.discussion;
     const unread = discussion.isUnread() && !this.showRepliesCount();
     const replies = discussion.replyCount() || 0;
 
-    if (items.has('replyCount')) items.remove('replyCount');
+    items.remove('replyCount');
 
     items.add(
       'hearthCounts',
