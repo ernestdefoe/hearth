@@ -153,9 +153,10 @@ html:not(#x-hi) .Hero.DiscussionHero {
   .HearthPost .Post-avatar {
     --size: 52px;
   }
-  // The avatar column is narrower than core's 64px + padding.
+  // Core's avatar column width, so what other extensions hang under the
+  // avatar (Nameplate's level, ranks and stats) keeps its room.
   .HearthPost .Post-container {
-    grid-template-columns: 68px minmax(0, 1fr);
+    grid-template-columns: var(--avatar-column-width) minmax(0, 1fr);
   }
 }
 
@@ -344,7 +345,7 @@ html:not(#x-hi) .Hero.DiscussionHero {
 @media @tablet-up {
   .HearthPost--mine {
     .Post-container {
-      grid-template-columns: minmax(0, 1fr) 68px;
+      grid-template-columns: minmax(0, 1fr) var(--avatar-column-width);
     }
     .Post-side {
       order: 2;
@@ -357,7 +358,7 @@ html:not(#x-hi) .Hero.DiscussionHero {
     .PostUser-badges {
       float: right;
       margin-left: 0;
-      margin-right: calc(~'5px - 68px');
+      margin-right: calc(~'5px - var(--avatar-column-width)');
     }
     .Post-header > ul,
     .Post-footer,
