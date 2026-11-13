@@ -31,6 +31,15 @@ h3,
   font-weight: 400;
 }
 
+// 🚨 The content column is a flex child: without min-width 0 it grows to its
+// widest child's min-content (another extension's long one-line card) and the
+// whole page scrolls sideways. Seen on dev with Story Chain's card.
+.Page-content,
+.Page-main,
+.sideNavOffset {
+  min-width: 0;
+}
+
 // ---------------------------------------------------------------------------
 // Header
 // ---------------------------------------------------------------------------
