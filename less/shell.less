@@ -178,6 +178,14 @@ h3,
     font-weight: 800;
   }
 
+  // "Tags" heading between the links and the pantry.
+  .sideNav .Dropdown-separator {
+    background: transparent;
+    margin: 10px 0;
+  }
+}
+
+@media @expand-side-nav {
   // Tags in the sidebar: a dot of the tag's colour instead of the icon, as
   // in a pantry of labelled jars. flarum/tags puts the colour on the icon
   // as `color`; the dot is that colour.
@@ -203,11 +211,6 @@ h3,
     }
   }
 
-  // "Tags" heading between the links and the pantry.
-  .sideNav .Dropdown-separator {
-    background: transparent;
-    margin: 10px 0;
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -247,7 +250,27 @@ h3,
   overflow-wrap: anywhere;
 }
 
-// The House rules card, in the sidebar below the pantry.
+// The House rules card, in the sidebar below the pantry. Tablets lay the
+// sidebar out as one horizontal row of links, where a card has no place.
 .HearthHouseRules {
   margin-top: 22px;
+}
+@media @tablet {
+  .IndexPage-nav .item-hearthHouseRules {
+    display: none;
+  }
+}
+
+// The composer: rounded top, and its focus ring in Hearth's sage, not the
+// owner's primary.
+.Composer {
+  border-radius: 22px 22px 0 0;
+}
+@media @tablet-up {
+  .Composer {
+    border-radius: 22px 22px 0 0;
+  }
+  .Composer.active:not(.fullScreen) {
+    box-shadow: 0 0 0 2px var(--hearth-sage), 0 8px 24px var(--shadow-color);
+  }
 }
