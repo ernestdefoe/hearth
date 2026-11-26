@@ -8,7 +8,8 @@ const t = (key: string) => app.translator.trans(`ernestdefoe-hearth.admin.settin
  * 🚨 An Admin extender, not `app.extensionData` (gone in Flarum 2), and
  * exported from here ONLY: this file imports flarum/admin/app.
  *
- * 🚨 Every setting has a reader, named in extend.php beside its default.
+ * 🚨 Every setting has a reader, named in extend.php beside its default (the
+ * four colors' defaults live in src/Palette.php and are each row's first preset).
  * Select options are keyed by words, never numbers (numeric keys get re-sorted).
  */
 const c = (key: string) => app.translator.trans(`ernestdefoe-hearth.admin.colors.${key}`);

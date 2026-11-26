@@ -4,22 +4,6 @@ import { extend } from 'flarum/common/extend';
 /** Consecutive replies by one person within this window read as one turn. */
 const GROUP_WINDOW = 10 * 60 * 1000;
 
-/**
- * Chat-bubble posts: whose turn it is and whether it continues the last one.
- *
- * - `HearthPost--mine` on the reader's own posts (drawn on the right when the
- *   owner keeps "your posts on the right" on);
- * - `HearthPost--cont` on a reply that follows the same person's within ten
- *   minutes: no second avatar and name, just the next bubble;
- * - `HearthPost--event` on renamed / tagged / pinned notes, drawn as one
- *   small centred line.
- *
- * 🚨 Done in PostStream's VIEW, every render, as a pure function of each post
- * and the one before it. A post that arrives without a page load (realtime,
- * the reader's own reply, "load more") goes through exactly the same code as
- * one that was there at first paint. Only classes change: the stream's keys,
- * indices and scroll anchoring stay core's.
- */
 /** Core wraps the first post's item in a fragment when it has items after it; find the real item either way. */
 function itemFor(vnode: any): any {
   return vnode && vnode.tag === '[' ? vnode.children?.find((c: any) => c?.attrs?.['data-index'] !== undefined) : vnode;
@@ -57,6 +41,22 @@ function classesFor(post: any, prev: any, item: any, me: any, right: boolean): s
   return classes;
 }
 
+/**
+ * Chat-bubble posts: whose turn it is and whether it continues the last one.
+ *
+ * - `HearthPost--mine` on the reader's own posts (drawn on the right when the
+ *   owner keeps "your posts on the right" on);
+ * - `HearthPost--cont` on a reply that follows the same person's within ten
+ *   minutes: no second avatar and name, just the next bubble;
+ * - `HearthPost--event` on renamed / tagged / pinned notes, drawn as one
+ *   small centred line.
+ *
+ * 🚨 Done in PostStream's VIEW, every render, as a pure function of each post
+ * and the one before it. A post that arrives without a page load (realtime,
+ * the reader's own reply, "load more") goes through exactly the same code as
+ * one that was there at first paint. Only classes change: the stream's keys,
+ * indices and scroll anchoring stay core's.
+ */
 export default function installStream() {
   // 🚨 By PATH, not by import: core code-splits PostStream, so at boot the
   // module is not loaded and an imported reference would be undefined.
