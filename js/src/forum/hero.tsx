@@ -1,4 +1,3 @@
-import app from 'flarum/forum/app';
 import { extend } from 'flarum/common/extend';
 import humanTime from 'flarum/common/helpers/humanTime';
 import username from 'flarum/common/helpers/username';

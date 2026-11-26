@@ -33,6 +33,8 @@ Hearth keeps Flarum's own page structure. It changes how the forum looks, not wh
 |---|---|
 | Colors | Four colors, each with named presets, a color picker and a hex field: **Accent** (Sage, Clay, Lake, Plum), **Paper** (Oat, Linen, Fern, Rose), **Evening accent** and **Evening ground**. Every tint, line, hover and button is worked out from these four, so one pick recolors the whole theme. Paper is kept light and the Evening ground dark so text stays readable; a color on the wrong side falls back to the default. |
 | Show the welcome card | The greeting above the discussion list. |
+| Welcome card button text | What the guest button says. Empty keeps "Join in". The card's title and message are the forum's welcome banner (Appearance). |
+| Welcome card button link | Where the guest button goes: an `https://` link or a path on your forum. Empty opens Flarum's sign-up dialog. |
 | Put each member's own posts on the right | Off keeps every post on the left. |
 | Show tags as a shelf of jars | Off shows flarum/tags' usual tiles. |
 | Seasonal touches | Northern hemisphere, southern hemisphere, or off. |

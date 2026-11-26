@@ -13,7 +13,6 @@ use ErnestDefoe\Hearth\ActiveTheme;
 use Flarum\Api\Context;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
-use Flarum\Extension\ExtensionManager;
 use Flarum\Post\CommentPost;
 use s9e\TextFormatter\Utils;
 
@@ -23,6 +22,10 @@ use s9e\TextFormatter\Utils;
 class DiscussionResourceFields
 {
     public const EXCERPT_LENGTH = 160;
+
+    public function __construct(protected ActiveTheme $theme)
+    {
+    }
 
     public function __invoke(): array
     {
@@ -37,34 +40,29 @@ class DiscussionResourceFields
              */
             Schema\Str::make('hearthExcerpt')
                 ->nullable()
-                ->visible(fn (Discussion $discussion, Context $context): bool => $context->listing() && self::wanted($context))
+                ->visible(fn (Discussion $discussion, Context $context): bool => $context->listing() && $this->wanted($context))
                 ->get(fn (Discussion $discussion): ?string => $this->excerpt($discussion)),
         ];
     }
 
     /**
-     * Hearth's own excerpt is wanted when the visitor is on Hearth and
-     * fof/synopsis is not enabled.
+     * Hearth's own excerpt is wanted when the visitor is on Hearth.
      *
-     * 🚨 With fof/synopsis enabled, the forum already has an excerpt: the
-     * owner's choice of first or last post and length, per tag, and each
-     * member's "show excerpts" preference. Hearth draws synopsis's in its own
-     * slot under the title (list.tsx) and does no excerpt work of its own: no
-     * eager load, no field. Two excerpts per row was Lobby 1.0.0's bug.
+     * 🚨 With fof/synopsis enabled the forum already has an excerpt (the
+     * owner's choice of post and length, per tag, and each member's "show
+     * excerpts" preference), so extend.php registers neither this field nor
+     * its eager load then (Extend\Conditional). Hearth draws synopsis's in its
+     * own slot under the title (list.tsx). Two excerpts per row was Lobby
+     * 1.0.0's bug.
      */
-    public static function wanted(Context $context): bool
+    public function wanted(Context $context): bool
     {
-        return ! resolve(ExtensionManager::class)->isEnabled('fof-synopsis')
-            && resolve(ActiveTheme::class)->isHearth($context->request);
+        return $this->theme->isHearth($context->request);
     }
 
     public function excerpt(Discussion $discussion): ?string
     {
-        if (! $discussion->relationLoaded('firstPost')) {
-            return null;
-        }
-
-        $post = $discussion->getRelation('firstPost');
+        $post = $discussion->relationLoaded('firstPost') ? $discussion->getRelation('firstPost') : null;
 
         if (! $post instanceof CommentPost || ! is_string($post->parsed_content) || $post->parsed_content === '') {
             return null;
@@ -83,21 +81,29 @@ class DiscussionResourceFields
             return null;
         }
 
-        $xml = $post->parsed_content;
+        $text = $this->plainText($post->parsed_content);
 
-        // Attachment markup carries filenames and sizes, which read as noise
-        // in a sentence of prose. Quotes are somebody else's words. Spoilers
-        // and collapsed details are hidden on purpose and stay hidden here.
+        return $text === '' ? null : $this->shorten($text);
+    }
+
+    /**
+     * The post's own words as one line of plain text. Attachment markup
+     * carries filenames and sizes, which read as noise in a sentence of
+     * prose; quotes are somebody else's words; spoilers and collapsed
+     * details are hidden on purpose and stay hidden here.
+     */
+    private function plainText(string $xml): string
+    {
         foreach (['UPL-IMAGE-PREVIEW', 'UPL-FILE', 'QUOTE', 'POSTMENTION', 'SPOILER', 'ISPOILER', 'DETAILS'] as $tag) {
             $xml = Utils::removeTag($xml, $tag);
         }
 
-        $text = trim(preg_replace('/\s+/u', ' ', Utils::removeFormatting($xml)) ?? '');
+        return trim(preg_replace('/\s+/u', ' ', Utils::removeFormatting($xml)) ?? '');
+    }
 
-        if ($text === '') {
-            return null;
-        }
-
+    /** Cut at a word near EXCERPT_LENGTH, with an ellipsis. */
+    private function shorten(string $text): string
+    {
         if (mb_strlen($text) <= self::EXCERPT_LENGTH) {
             return $text;
         }

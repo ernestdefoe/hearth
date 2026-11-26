@@ -15,7 +15,8 @@ const FLIP: Record<Season, Season> = { winter: 'summer', spring: 'autumn', summe
  * timezone and the reader's never disagree by more than a day at the edge.
  */
 export function season(now = new Date()): Season | null {
-  const setting = app.forum.attribute<string>('hearthSeasons') || 'north';
+  // The default (north) is registered in extend.php: anything but off/south is north.
+  const setting = app.forum.attribute<string>('hearthSeasons');
   if (setting === 'off' || enabled('ernestdefoe-festoon')) return null;
 
   const north = NORTH[now.getMonth()];

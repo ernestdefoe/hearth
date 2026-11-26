@@ -27,7 +27,8 @@
         "ernestdefoe/homecoming": "Hearth uses Homecoming's welcome strip instead of its own welcome card when it is enabled.",
         "ernestdefoe/festoon": "Hearth's seasonal touches stand down while Festoon dresses the forum.",
         "fof/forum-widgets-core": "Place Hearth's House rules card anywhere FoF Forum Widgets can.",
-        "ernestdefoe/wardrobe": "Run Hearth next to other themes and let members choose."
+        "ernestdefoe/wardrobe": "Run Hearth next to other themes and let members choose.",
+        "fof/synopsis": "When it is enabled, its excerpts are shown on discussion cards and Hearth makes none of its own."
     },
     "autoload": {
         "psr-4": {
@@ -47,7 +48,15 @@
                 "name": "fas fa-mug-hot",
                 "backgroundColor": "#E3B04B",
                 "color": "#3A2E27"
-            }
+            },
+            "optional-dependencies": [
+                "flarum/tags",
+                "ernestdefoe/homecoming",
+                "ernestdefoe/festoon",
+                "fof/forum-widgets-core",
+                "ernestdefoe/wardrobe",
+                "fof/synopsis"
+            ]
         }
     },
     "support": {

@@ -12,6 +12,7 @@ import installPantryPills from './pantryPills';
 import installPantryHeading from './pantryHeading';
 import { enabled } from './util';
 
+export { default as extend } from './extend';
 export { default as WelcomeCard } from './welcome';
 export { HouseRules } from './houseRules';
 

@@ -4,6 +4,7 @@ import extractText from 'flarum/common/utils/extractText';
 
 const t = (key: string, params: Record<string, any> = {}) => app.translator.trans(`ernestdefoe-hearth.admin.colors.${key}`, params);
 
+/** The first preset of each row is Hearth's default (src/Palette.php holds the same). */
 export interface Preset {
   /** Locale key under admin.colors.presets */
   name: string;
@@ -16,7 +17,6 @@ interface Attrs {
   label: any;
   help: any;
   presets: Preset[];
-  fallback: string;
   /** A settings stream: () => value, (value) => set. */
   stream: (value?: string) => string;
 }
@@ -31,7 +31,8 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
  */
 export default class ColorRow extends Component<Attrs> {
   view() {
-    const { name, label, help, presets, fallback, stream } = this.attrs;
+    const { name, label, help, presets, stream } = this.attrs;
+    const fallback = presets[0].hex;
     const raw = String(stream() || '');
     const current = HEX.test(raw) ? raw.toUpperCase() : fallback;
     const id = 'hearth-color-' + name;
@@ -43,25 +44,7 @@ export default class ColorRow extends Component<Attrs> {
         <label htmlFor={id}>{label}</label>
         <div className="helpText">{help}</div>
         <div className="HearthColorRow-controls">
-          <div className="HearthColorRow-swatches" role="group" aria-label={extractText(t('presets_label', { label: text }))}>
-            {presets.map((preset) => {
-              const on = preset.hex.toUpperCase() === current;
-              const presetName = extractText(t('presets.' + preset.name));
-
-              return (
-                <button
-                  type="button"
-                  className={'HearthColorRow-swatch' + (on ? ' is-on' : '')}
-                  aria-pressed={on ? 'true' : 'false'}
-                  title={presetName + ' ' + preset.hex}
-                  onclick={() => stream(preset.hex)}
-                >
-                  <span className="HearthColorRow-chip" style={{ background: preset.hex }} aria-hidden="true" />
-                  <span className="HearthColorRow-name">{presetName}</span>
-                </button>
-              );
-            })}
-          </div>
+          {this.swatches(text, current)}
           <input
             id={id}
             type="color"
@@ -82,6 +65,31 @@ export default class ColorRow extends Component<Attrs> {
           />
         </div>
         {raw && !HEX.test(raw) ? <div className="HearthColorRow-error">{t('invalid', { fallback })}</div> : null}
+      </div>
+    );
+  }
+
+  /** The named presets as swatches; the one in use is pressed. */
+  swatches(label: string, current: string) {
+    return (
+      <div className="HearthColorRow-swatches" role="group" aria-label={extractText(t('presets_label', { label }))}>
+        {this.attrs.presets.map((preset) => {
+          const on = preset.hex.toUpperCase() === current;
+          const presetName = extractText(t('presets.' + preset.name));
+
+          return (
+            <button
+              type="button"
+              className={'HearthColorRow-swatch' + (on ? ' is-on' : '')}
+              aria-pressed={on ? 'true' : 'false'}
+              title={presetName + ' ' + preset.hex}
+              onclick={() => this.attrs.stream(preset.hex)}
+            >
+              <span className="HearthColorRow-chip" style={{ background: preset.hex }} aria-hidden="true" />
+              <span className="HearthColorRow-name">{presetName}</span>
+            </button>
+          );
+        })}
       </div>
     );
   }

@@ -30,6 +30,10 @@ class DecideTheme implements MiddlewareInterface
     {
         $this->theme->decideForPage($request);
 
-        return $handler->handle($request);
+        try {
+            return $handler->handle($request);
+        } finally {
+            $this->theme->forgetPage();
+        }
     }
 }

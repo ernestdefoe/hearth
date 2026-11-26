@@ -2,8 +2,6 @@ import app from 'flarum/forum/app';
 import Component from 'flarum/common/Component';
 import Link from 'flarum/common/components/Link';
 import Button from 'flarum/common/components/Button';
-import LogInModal from 'flarum/forum/components/LogInModal';
-import SignUpModal from 'flarum/forum/components/SignUpModal';
 import { Kettle, Lamp } from './art';
 import { season } from './seasons';
 import { t } from './util';
@@ -92,22 +90,39 @@ export default class WelcomeCard extends Component {
     ];
   }
 
+  /*
+   * 🚨 Both dialogs are code-split chunks in Flarum 2: a static import is
+   * undefined at boot, and clicking did nothing (Discuss d/40361/3). Loaded
+   * on demand, as core's own header buttons do.
+   */
   guest() {
     const title = app.forum.attribute<string>('welcomeTitle')?.trim();
     const message = app.forum.attribute<string>('welcomeMessage')?.trim();
     const canSignUp = app.forum.attribute('allowSignUp');
+    // The owner's own button text and link, when set (checked on the server).
+    const label = app.forum.attribute<string>('hearthWelcomeButtonLabel') || t('welcome.sign_up');
+    const url = app.forum.attribute<string>('hearthWelcomeButtonUrl') || '';
 
     return [
       <h2 className="HearthWelcome-title">{title || t('welcome.guest_title')}</h2>,
       // The welcome message is the owner's own HTML, as core's hero renders it.
       <div className="HearthWelcome-text">{message ? m.trust(message) : t('welcome.guest_text')}</div>,
       <div className="HearthWelcome-actions">
-        {canSignUp ? (
-          <Button className="Button HearthWelcome-action" onclick={() => app.modal.show(SignUpModal)}>
-            {t('welcome.sign_up')}
+        {url ? (
+          // A link of the owner's choosing shows even when sign-ups are closed:
+          // it may be where people apply, or an outside sign-up.
+          <a className="Button HearthWelcome-action" href={url} rel={/^https?:/i.test(url) ? 'noopener' : undefined}>
+            {label}
+          </a>
+        ) : canSignUp ? (
+          <Button className="Button HearthWelcome-action" onclick={() => app.modal.show(() => import('flarum/forum/components/SignUpModal'))}>
+            {label}
           </Button>
         ) : null}
-        <Button className="Button Button--link HearthWelcome-login" onclick={() => app.modal.show(LogInModal)}>
+        <Button
+          className="Button Button--link HearthWelcome-login"
+          onclick={() => app.modal.show(() => import('flarum/forum/components/LogInModal'))}
+        >
           {t('welcome.log_in')}
         </Button>
       </div>,

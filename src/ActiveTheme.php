@@ -9,8 +9,8 @@
 
 namespace ErnestDefoe\Hearth;
 
-use Flarum\Extension\ExtensionManager;
 use Flarum\Http\RequestUtil;
+use Illuminate\Contracts\Container\Container;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -19,8 +19,9 @@ use Psr\Http\Message\ServerRequestInterface;
  * On a forum running ernestdefoe/wardrobe, several themes are installed and
  * each visitor sees one. Wardrobe keeps every other theme's CSS and JS out
  * of a visitor's bundle, but PHP runs for everyone. Hearth's server-side
- * work (the excerpt eager load, the font preload, the forum settings) should
- * only be paid for by visitors on Hearth.
+ * work (the excerpt eager load, the font preload, the color style tag) should
+ * only be paid for by visitors on Hearth. The few settings it serializes are
+ * read for everyone; they are cheap and the forum payload is shared.
  *
  * Without Wardrobe, or with Hearth not among Wardrobe's themes, Hearth is in
  * everyone's bundle, so the answer is always yes.
@@ -36,16 +37,33 @@ class ActiveTheme
 
     private const REGISTRY = 'Ernestdefoe\\Wardrobe\\ThemeRegistry';
 
-    /** Decided for the forum page being rendered in this process, if any. */
+    /** Decided for the forum page being rendered by this request, if any. */
     private ?bool $page = null;
 
-    public function __construct(protected ExtensionManager $extensions)
+    /** Wardrobe is enabled: set by extend.php's Extend\Conditional, never looked up here. */
+    private bool $wardrobe = false;
+
+    public function __construct(protected Container $container)
     {
+    }
+
+    public function useWardrobe(): void
+    {
+        $this->wardrobe = true;
     }
 
     public function decideForPage(ServerRequestInterface $request): void
     {
         $this->page = $this->decide($request);
+    }
+
+    /**
+     * 🚨 Forgotten once the page is sent: in a long-lived worker the next
+     * request must decide for itself, not inherit this visitor's theme.
+     */
+    public function forgetPage(): void
+    {
+        $this->page = null;
     }
 
     public function isHearth(?ServerRequestInterface $request): bool
@@ -59,11 +77,12 @@ class ActiveTheme
 
     protected function decide(ServerRequestInterface $request): bool
     {
-        if (! $this->extensions->isEnabled('ernestdefoe-wardrobe') || ! class_exists(self::REGISTRY)) {
+        if (! $this->wardrobe || ! class_exists(self::REGISTRY)) {
             return true;
         }
 
-        $registry = resolve(self::REGISTRY);
+        // Only asked for once Wardrobe is known to be enabled and its class present.
+        $registry = $this->container->make(self::REGISTRY);
 
         if (! in_array(self::ID, $registry->ids(), true)) {
             return true;

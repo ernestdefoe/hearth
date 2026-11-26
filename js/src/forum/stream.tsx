@@ -20,6 +20,43 @@ const GROUP_WINDOW = 10 * 60 * 1000;
  * one that was there at first paint. Only classes change: the stream's keys,
  * indices and scroll anchoring stay core's.
  */
+/** Core wraps the first post's item in a fragment when it has items after it; find the real item either way. */
+function itemFor(vnode: any): any {
+  return vnode && vnode.tag === '[' ? vnode.children?.find((c: any) => c?.attrs?.['data-index'] !== undefined) : vnode;
+}
+
+/**
+ * The same person again, within the window, with nothing between: a gap of
+ * days keeps core's own "N days later" notice and its header, and so do the
+ * first post and anything after an event or a hidden post.
+ */
+function continues(post: any, prev: any, item: any): boolean {
+  const gap = Array.isArray(item.children) && item.children.some((c: any) => c?.attrs?.className === 'PostStream-timeGap');
+
+  return (
+    !gap &&
+    !!prev &&
+    post.number() !== 1 &&
+    prev.contentType() === 'comment' &&
+    !prev.isHidden() &&
+    !post.isHidden() &&
+    !!prev.user() &&
+    prev.user() === post.user() &&
+    post.createdAt().getTime() - prev.createdAt().getTime() <= GROUP_WINDOW
+  );
+}
+
+/** The Hearth classes for one post, given the one before it. */
+function classesFor(post: any, prev: any, item: any, me: any, right: boolean): string[] {
+  if (post.contentType() !== 'comment') return ['HearthPost--event'];
+
+  const classes = ['HearthPost'];
+  if (right && me && post.user() === me) classes.push('HearthPost--mine');
+  if (continues(post, prev, item)) classes.push('HearthPost--cont');
+
+  return classes;
+}
+
 export default function installStream() {
   // 🚨 By PATH, not by import: core code-splits PostStream, so at boot the
   // module is not loaded and an imported reference would be undefined.
@@ -32,10 +69,6 @@ export default function installStream() {
     const posts: any[] = this.stream.posts();
     const start: number = this.stream.visibleStart;
 
-    // Core wraps the first post's item in a fragment when it has items after
-    // it; find the real item either way.
-    const itemFor = (vnode: any) => (vnode && vnode.tag === '[' ? vnode.children?.find((c: any) => c?.attrs?.['data-index'] !== undefined) : vnode);
-
     for (const vnode of items) {
       const item = itemFor(vnode);
       const index = item?.attrs?.['data-index'];
@@ -45,35 +78,7 @@ export default function installStream() {
       if (!post) continue;
 
       const prev = index - start > 0 ? posts[index - start - 1] : null;
-      const classes: string[] = [];
-
-      if (post.contentType() !== 'comment') {
-        classes.push('HearthPost--event');
-      } else {
-        classes.push('HearthPost');
-
-        if (right && me && post.user() === me) classes.push('HearthPost--mine');
-
-        // A gap of days gets core's own "N days later" notice, which must keep
-        // its header; so does the first post and anything after an event.
-        const gap = Array.isArray(item.children) && item.children.some((c: any) => c?.attrs?.className === 'PostStream-timeGap');
-
-        if (
-          !gap &&
-          prev &&
-          post.number() !== 1 &&
-          prev.contentType() === 'comment' &&
-          !prev.isHidden() &&
-          !post.isHidden() &&
-          prev.user() &&
-          prev.user() === post.user() &&
-          post.createdAt().getTime() - prev.createdAt().getTime() <= GROUP_WINDOW
-        ) {
-          classes.push('HearthPost--cont');
-        }
-      }
-
-      item.attrs.className = (item.attrs.className || '') + ' ' + classes.join(' ');
+      item.attrs.className = (item.attrs.className || '') + ' ' + classesFor(post, prev, item, me, right).join(' ');
     }
   });
 }

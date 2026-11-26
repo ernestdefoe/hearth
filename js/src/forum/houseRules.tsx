@@ -76,8 +76,8 @@ function registerWidget() {
         position: 0,
       })
       .extend(app, EXT);
-  } catch (e) {
-    // A widget host whose internals moved must not take the forum down.
-    console.warn('[hearth] widget registration failed', e);
+  } catch {
+    // A widget host whose internals moved must not take the forum down: the
+    // card simply stays in the sidebar, where it shows without a host.
   }
 }

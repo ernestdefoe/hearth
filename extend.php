@@ -12,6 +12,8 @@ use ErnestDefoe\Hearth\Api;
 use ErnestDefoe\Hearth\HearthServiceProvider;
 use ErnestDefoe\Hearth\Http\DecideTheme;
 use ErnestDefoe\Hearth\Palette;
+use ErnestDefoe\Hearth\WardrobeProvider;
+use ErnestDefoe\Hearth\WelcomeButton;
 use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource;
@@ -68,14 +70,17 @@ return [
      * extend.php must not autoload our own classes while composer updates.
      */
     (new Extend\Settings())
-        // read by Palette (the colours) via the document head above
-        ->default('ernestdefoe-hearth.accent', '#4F6F4B')
-        ->default('ernestdefoe-hearth.paper', '#F5EEE2')
-        ->default('ernestdefoe-hearth.evening_accent', '#A9C4A0')
-        ->default('ernestdefoe-hearth.evening_ground', '#1F1814')
+        // The four colours (accent, paper, evening_accent, evening_ground) are
+        // read by Palette, which holds their defaults: no second copy here.
         // read by welcome.tsx: the welcome card above the discussion list
         ->default('ernestdefoe-hearth.welcome', true)
         ->serializeToForum('hearthWelcome', 'ernestdefoe-hearth.welcome', 'boolval')
+        // read by welcome.tsx: the guest button's own text and link (empty = Hearth's
+        // "Join in" and Flarum's sign-up dialog); checked in WelcomeButton
+        ->default('ernestdefoe-hearth.welcome_button_label', '')
+        ->serializeToForum('hearthWelcomeButtonLabel', 'ernestdefoe-hearth.welcome_button_label', fn ($value) => WelcomeButton::label($value))
+        ->default('ernestdefoe-hearth.welcome_button_url', '')
+        ->serializeToForum('hearthWelcomeButtonUrl', 'ernestdefoe-hearth.welcome_button_url', fn ($value) => WelcomeButton::url($value))
         // read by seasons.ts: north, south or off
         ->default('ernestdefoe-hearth.seasons', 'north')
         ->serializeToForum('hearthSeasons', 'ernestdefoe-hearth.seasons')
@@ -89,17 +94,30 @@ return [
         ->default('ernestdefoe-hearth.house_rules', '')
         ->serializeToForum('hearthHouseRules', 'ernestdefoe-hearth.house_rules', fn ($value) => trim((string) $value)),
 
-    (new Extend\ApiResource(Resource\DiscussionResource::class))
-        ->fields(Api\DiscussionResourceFields::class)
-        /*
-         * The excerpt reads each row's first post. One eager load for the
-         * whole page, never a query per row, and only for a visitor on Hearth.
-         *
-         * 🚨 The WHOLE post, never a column subset: the eager load is shared,
-         * and another extension that includes `firstPost` would serialise the
-         * half-loaded model.
-         */
-        ->endpoint('index', fn (Endpoint\Index $endpoint) => $endpoint->eagerLoad(
-            fn (array $included, Context $context) => Api\DiscussionResourceFields::wanted($context) ? ['firstPost'] : []
-        )),
+    /*
+     * The excerpt, unless fof/synopsis is enabled: then the forum already has
+     * one, and Hearth registers neither the field nor its eager load.
+     */
+    (new Extend\Conditional())
+        ->whenExtensionDisabled('fof-synopsis', fn () => [
+            (new Extend\ApiResource(Resource\DiscussionResource::class))
+                ->fields(Api\DiscussionResourceFields::class)
+                /*
+                 * The excerpt reads each row's first post. One eager load for the
+                 * whole page, never a query per row, and only for a visitor on Hearth.
+                 *
+                 * 🚨 The WHOLE post, never a column subset: the eager load is shared,
+                 * and another extension that includes `firstPost` would serialise the
+                 * half-loaded model.
+                 */
+                ->endpoint('index', fn (Endpoint\Index $endpoint) => $endpoint->eagerLoad(
+                    fn (array $included, Context $context) => resolve(Api\DiscussionResourceFields::class)->wanted($context) ? ['firstPost'] : []
+                )),
+        ]),
+
+    // With Wardrobe, Hearth's server-side work is only done for visitors on Hearth.
+    (new Extend\Conditional())
+        ->whenExtensionEnabled('ernestdefoe-wardrobe', fn () => [
+            (new Extend\ServiceProvider())->register(WardrobeProvider::class),
+        ]),
 ];
